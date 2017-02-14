@@ -13,12 +13,12 @@ import Foundation
 
 class StaticValuesReceiver : NSObject, Receiver {
 
-    private var notifier: ReceiverNotificationDelegate?
-    private var readings: [Reading]?
-    private var valueChangeInterval: Double
-    private var valueSender: NSTimer?
-    private var nextValueIdx: Int
-    private var latestReading: Reading?
+    fileprivate var notifier: ReceiverNotificationDelegate?
+    fileprivate var readings: [Reading]?
+    fileprivate var valueChangeInterval: Double
+    fileprivate var valueSender: Timer?
+    fileprivate var nextValueIdx: Int
+    fileprivate var latestReading: Reading?
 
     internal init(readings: [Reading]?, valueChangeInterval: Double) {
         self.readings = readings
@@ -30,9 +30,9 @@ class StaticValuesReceiver : NSObject, Receiver {
     func sendNextValue() {
         if(nil != notifier && nil != readings){
             var reading = readings![nextValueIdx]
-            reading.timestamp = NSDate()
+            reading.timestamp = Date()
             latestReading = reading
-            sendReceiverEvent(ReceiverEventCode.CONNECTED_LAST_READING_GOOD, withLatestReading: latestReading)
+            sendReceiverEvent(ReceiverEventCode.connected_LAST_READING_GOOD, withLatestReading: latestReading)
             nextValueIdx = (nextValueIdx + 1) % readings!.count
         }
     }
@@ -41,13 +41,13 @@ class StaticValuesReceiver : NSObject, Receiver {
     // Returns false if no values exist to send or notifier is null
     func connect() -> Bool {
         if(nil == self.notifier || nil == self.readings || 0 == self.readings?.count){
-            sendReceiverEvent(ReceiverEventCode.DISCONNECTED, withLatestReading: latestReading)
+            sendReceiverEvent(ReceiverEventCode.disconnected, withLatestReading: latestReading)
             return false
         }
 
         if(nil == valueSender){
-            valueSender = NSTimer.scheduledTimerWithTimeInterval(valueChangeInterval, target: self, selector: "sendNextValue", userInfo: nil, repeats: true)
-            sendReceiverEvent(ReceiverEventCode.CONNECTED_WAITING_FOR_FIRST_READING, withLatestReading: latestReading)
+            valueSender = Timer.scheduledTimer(timeInterval: valueChangeInterval, target: self, selector: #selector(StaticValuesReceiver.sendNextValue), userInfo: nil, repeats: true)
+            sendReceiverEvent(ReceiverEventCode.connected_WAITING_FOR_FIRST_READING, withLatestReading: latestReading)
         }
         return true
     }
@@ -58,12 +58,12 @@ class StaticValuesReceiver : NSObject, Receiver {
         if(nil != valueSender){
             valueSender?.invalidate()
             valueSender = nil
-            sendReceiverEvent(ReceiverEventCode.DISCONNECTED, withLatestReading: latestReading)
+            sendReceiverEvent(ReceiverEventCode.disconnected, withLatestReading: latestReading)
         }
         return true
     }
 
-    func sendReceiverEvent(eventCode: ReceiverEventCode, withLatestReading: Reading?){
+    func sendReceiverEvent(_ eventCode: ReceiverEventCode, withLatestReading: Reading?){
         if(nil != notifier){
             notifier!.receiver(self, hadEvent: eventCode, withLatestReading: withLatestReading)
         }

@@ -8,13 +8,13 @@
 
 import Foundation
 
-extension NSUserDefaults {
+extension UserDefaults {
     var transmitterId: String {
         get {
-            return stringForKey("transmitterId") ?? "??????"
+            return string(forKey: "transmitterId") ?? "??????"
         }
         set {
-            setObject(newValue, forKey: "transmitterId")
+            set(newValue, forKey: "transmitterId")
         }
     }
 }

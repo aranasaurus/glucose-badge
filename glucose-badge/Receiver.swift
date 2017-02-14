@@ -9,11 +9,11 @@
 import Foundation
 
 public enum ReceiverEventCode: UInt16 {
-    case CONNECTED_WAITING_FOR_FIRST_READING = 1
-    case CONNECTED_LAST_READING_ERROR = 2
-    case CONNECTED_LAST_READING_GOOD = 3
-    case DISCONNECTED = 4
-    case LOST_CONNECTION = 5
+    case connected_WAITING_FOR_FIRST_READING = 1
+    case connected_LAST_READING_ERROR = 2
+    case connected_LAST_READING_GOOD = 3
+    case disconnected = 4
+    case lost_CONNECTION = 5
 }
 
 protocol Receiver : class {

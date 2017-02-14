@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ReceiverNotificationDelegate: class {
-    func receiver(receiver: Receiver, hadEvent: ReceiverEventCode, withLatestReading: Reading?)
+    func receiver(_ receiver: Receiver, hadEvent: ReceiverEventCode, withLatestReading: Reading?)
 }

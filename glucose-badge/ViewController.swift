@@ -19,7 +19,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
-        transmitterIdField.text = NSUserDefaults.standardUserDefaults().transmitterId
+        transmitterIdField.text = UserDefaults.standard.transmitterId
         AppDelegate.sharedDelegate.initializeReceiver(transmitterIdField.text!)
 
         transmitterIdField.delegate = self
@@ -32,61 +32,61 @@ class ViewController: UIViewController, UITextFieldDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    internal func handleReceiverEvent(eventCode: ReceiverEventCode, withLatestReading: Reading?){
-        let mydateFormatter = NSDateFormatter()
-        mydateFormatter.calendar = NSCalendar(calendarIdentifier: "NSCalendarIdentifierISO8601")
+    internal func handleReceiverEvent(_ eventCode: ReceiverEventCode, withLatestReading: Reading?){
+        let mydateFormatter = DateFormatter()
+        mydateFormatter.calendar = Calendar(identifier: "NSCalendarIdentifierISO8601")
         mydateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss xx"
-        mydateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        mydateFormatter.locale = Locale(identifier: "en_US_POSIX")
 
         switch(eventCode){
-        case ReceiverEventCode.CONNECTED_LAST_READING_GOOD:
+        case ReceiverEventCode.connected_LAST_READING_GOOD:
             note.text = "We're all good (I think)"
-            note.textColor = UIColor.blueColor()
+            note.textColor = UIColor.blue
             mostRecentValue.text = String(withLatestReading!.value)
-            atTime.text = mydateFormatter.stringFromDate(withLatestReading!.timestamp)
+            atTime.text = mydateFormatter.string(from: withLatestReading!.timestamp as Date)
             break
 
-        case ReceiverEventCode.CONNECTED_WAITING_FOR_FIRST_READING:
+        case ReceiverEventCode.connected_WAITING_FOR_FIRST_READING:
             note.text = "Connected and waiting for first reading"
-            note.textColor = UIColor.magentaColor()
+            note.textColor = UIColor.magenta
             mostRecentValue.text = "Waiting..."
-            atTime.text = mydateFormatter.stringFromDate(NSDate())
+            atTime.text = mydateFormatter.string(from: Date())
             break
 
-        case ReceiverEventCode.CONNECTED_LAST_READING_ERROR:
+        case ReceiverEventCode.connected_LAST_READING_ERROR:
             note.text = "Last reading was an error\n"
-            note.textColor = UIColor.redColor()
+            note.textColor = UIColor.red
             mostRecentValue.text = "!Receiver Error!..."
-            atTime.text = mydateFormatter.stringFromDate(NSDate())
+            atTime.text = mydateFormatter.string(from: Date())
             break
 
-        case ReceiverEventCode.DISCONNECTED:
+        case ReceiverEventCode.disconnected:
             note.text = "We are disconnected"
-            note.textColor = UIColor.brownColor()
+            note.textColor = UIColor.brown
             mostRecentValue.text = "Disconnected..."
-            atTime.text = mydateFormatter.stringFromDate(NSDate())
+            atTime.text = mydateFormatter.string(from: Date())
 
-        case ReceiverEventCode.LOST_CONNECTION:
+        case ReceiverEventCode.lost_CONNECTION:
             note.text = "Connection Lost..."
-            note.textColor = UIColor.redColor()
+            note.textColor = UIColor.red
             mostRecentValue.text = "Lost..."
-            atTime.text = mydateFormatter.stringFromDate(NSDate())
+            atTime.text = mydateFormatter.string(from: Date())
         }
 
         if(nil != withLatestReading){
-            note.text! += "\nThe last received reading was " + String(withLatestReading!.value) + " at " + mydateFormatter.stringFromDate(withLatestReading!.timestamp)
+            note.text! += "\nThe last received reading was " + String(withLatestReading!.value) + " at " + mydateFormatter.string(from: withLatestReading!.timestamp as Date)
         }
     }
 
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         AppDelegate.sharedDelegate.initializeReceiver(transmitterIdField.text!)
     }
 
-    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
     }
 
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }

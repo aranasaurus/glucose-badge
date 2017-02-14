@@ -10,9 +10,9 @@ import Foundation
 
 internal struct Reading {
     var value: UInt16
-    var timestamp: NSDate
+    var timestamp: Date
 
-    internal init(value: UInt16, timestamp: NSDate){
+    internal init(value: UInt16, timestamp: Date){
         self.value = value
         self.timestamp = timestamp
     }
