@@ -23,7 +23,6 @@ class xDripG5Receiver: NSObject, Receiver, TransmitterDelegate {
         
         transmitter = Transmitter(
             ID: transmitterId,
-            startTimeInterval: nil,
             passiveModeEnabled: true
         )
         transmitter?.stayConnected = true
@@ -67,8 +66,8 @@ class xDripG5Receiver: NSObject, Receiver, TransmitterDelegate {
         sendReceiverEvent(ReceiverEventCode.lost_CONNECTION, withLatestReading: latestReading)
     }
 
-    func transmitter(_ transmitter: Transmitter, didReadGlucose glucose: GlucoseRxMessage){
-        let reading = Reading(value:glucose.glucose, timestamp:Date())
+    func transmitter(_ transmitter: Transmitter, didRead glucose: Glucose){
+        let reading = Reading(value:glucose.glucoseMessage.glucose, timestamp:Date())
         latestReading = reading
         self.resetDisconnectTimer()
         self.sendReceiverEvent(ReceiverEventCode.connected_LAST_READING_GOOD, withLatestReading: latestReading)
@@ -77,6 +76,11 @@ class xDripG5Receiver: NSObject, Receiver, TransmitterDelegate {
     func transmitter(_ transmitter: Transmitter, didError error: Error){
         self.resetDisconnectTimer()
         self.sendReceiverEvent(ReceiverEventCode.connected_LAST_READING_ERROR, withLatestReading: latestReading)
+    }
+
+    func transmitter(_ transmitter: Transmitter, didReadUnknownData data: Data) {
+        // TODO:
+        assertionFailure("Implement me.")
     }
 
     func sendReceiverEvent(_ eventCode: ReceiverEventCode, withLatestReading: Reading?){

@@ -34,7 +34,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     internal func handleReceiverEvent(_ eventCode: ReceiverEventCode, withLatestReading: Reading?){
         let mydateFormatter = DateFormatter()
-        mydateFormatter.calendar = Calendar(identifier: "NSCalendarIdentifierISO8601")
+        mydateFormatter.calendar = Calendar(identifier: .iso8601)
         mydateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss xx"
         mydateFormatter.locale = Locale(identifier: "en_US_POSIX")
 
